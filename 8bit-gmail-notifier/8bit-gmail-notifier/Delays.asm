@@ -1,12 +1,12 @@
 /*
  * Delays.inc
  *
- *		Date: 09.01.2016 15:58:11
- *		Author: Borko Rajkovic
+ *        Date: 09.01.2016 15:58:11
+ *        Author: Borko Rajkovic
  */ 
 
  ; ============================== Time Delay Subroutines =====================
-.equ    fclk                = 8000000      ; system clock frequency (for delays)
+.equ    fclk                = 8000000              ; system clock frequency (for delays)
 
 ; ---------------------------------------------------------------------------
 ; Name:     delayTx1mS
@@ -17,9 +17,9 @@
 ;           requires delay1mS
 
 delayTx1mS:
-    call    delay1mS							; delay for 1 mS
-    dec     tmpReg								; update the delay counter
-    brne    delayTx1mS							; counter is not zero
+    call    delay1mS                               ; delay for 1 mS
+    dec     tmpReg                                 ; update the delay counter
+    brne    delayTx1mS                             ; counter is not zero
 
 ; arrive here when delay counter is zero (total delay period is finished)
     ret
@@ -32,19 +32,19 @@ delayTx1mS:
 ; Notes:    chews up fclk/1000 clock cycles (including the 'call')
 
 delay1mS:
-    push    YL                              ; [2] preserve registers
-    push    YH                              ; [2]
-    ldi     YL, low (((fclk/1000)-18)/4)    ; [1] delay counter
-    ldi     YH, high(((fclk/1000)-18)/4)    ; [1]
+    push    YL                                     ; [2] preserve registers
+    push    YH                                     ; [2]
+    ldi     YL, low (((fclk/1000)-18)/4)           ; [1] delay counter
+    ldi     YH, high(((fclk/1000)-18)/4)           ; [1]
 
 delay1mS_01:
-    sbiw    YH:YL, 1                        ; [2] update the the delay counter
-    brne    delay1mS_01                     ; [2] delay counter is not zero
+    sbiw    YH:YL, 1                               ; [2] update the the delay counter
+    brne    delay1mS_01                            ; [2] delay counter is not zero
 
 ; arrive here when delay counter is zero
-    pop     YH                              ; [2] restore registers
-    pop     YL                              ; [2]
-    ret                                     ; [4]
+    pop     YH                                     ; [2] restore registers
+    pop     YL                                     ; [2]
+    ret                                            ; [4]
 
 ; ---------------------------------------------------------------------------
 ; Name:     delayTx1uS
@@ -55,9 +55,9 @@ delay1mS_01:
 ;           requires delay1uS
 
 delayTx1uS:
-    call    delay1uS							; delay for 1 uS
-    dec     tmpReg								; decrement the delay counter
-    brne    delayTx1uS							; counter is not zero
+    call    delay1uS                               ; delay for 1 uS
+    dec     tmpReg                                 ; decrement the delay counter
+    brne    delayTx1uS                             ; counter is not zero
 
 ; arrive here when delay counter is zero (total delay period is finished)
     ret
@@ -70,10 +70,10 @@ delayTx1uS:
 ; Notes:    add push/pop instructions for 20 MHz clock frequency
 
 delay1uS:
-    ;push    tmpReg								; [2] these instructions do nothing except consume clock cycles
-    ;pop     tmpReg								; [2]
-    ;push    tmpReg								; [2]
-    ;pop     tmpReg								; [2]
-    ret											; [4]
+    ;push    tmpReg                                ; [2] these instructions do nothing except consume clock cycles
+    ;pop     tmpReg                                ; [2]
+    ;push    tmpReg                                ; [2]
+    ;pop     tmpReg                                ; [2]
+    ret                                            ; [4]
 
 ; ============================== End of Time Delay Subroutines ==============

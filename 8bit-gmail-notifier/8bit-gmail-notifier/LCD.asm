@@ -1,8 +1,8 @@
 /*
  * LCD.inc
  *
- *		Date: 09.01.2016 15:58:11
- *		Author: Borko Rajkovic
+ *        Date: 09.01.2016 15:58:11
+ *        Author: Borko Rajkovic
  */ 
 
 ; LCD interface
@@ -69,7 +69,7 @@ lcd_test:
     ldi     tmpReg, lcd_LineTwo             ; point to where the information should be displayed
     call    lcd_write_string_4d
 
-	ret
+    ret
 ; ****************************** End of Test Program Code *******************
 
 ; ============================== 4-bit LCD Subroutines ======================
@@ -113,34 +113,34 @@ lcd_init_4d:
     cbi     lcd_E_port, lcd_E_bit           ; make sure E is initially low
 
 ; Reset the LCD controller.
-    ldi     tmpReg, lcd_FunctionReset         ; first part of reset sequence
+    ldi     tmpReg, lcd_FunctionReset       ; first part of reset sequence
     call    lcd_write_4
-    ldi     tmpReg, 10                        ; 4.1 mS delay (min)
+    ldi     tmpReg, 10                      ; 4.1 mS delay (min)
     call    delayTx1mS
 
-    ldi     tmpReg, lcd_FunctionReset         ; second part of reset sequence
+    ldi     tmpReg, lcd_FunctionReset       ; second part of reset sequence
     call    lcd_write_4
-    ldi     tmpReg, 200                       ; 100 uS delay (min)
+    ldi     tmpReg, 200                     ; 100 uS delay (min)
     call    delayTx1uS
 
-    ldi     tmpReg, lcd_FunctionReset         ; third part of reset sequence
+    ldi     tmpReg, lcd_FunctionReset       ; third part of reset sequence
     call    lcd_write_4
-    ldi     tmpReg, 200                       ; this delay is omitted in the data sheet
+    ldi     tmpReg, 200                     ; this delay is omitted in the data sheet
     call    delayTx1uS
 
 ; Preliminary Function Set instruction - used only to set the 4-bit mode.
 ; The number of lines or the font cannot be set at this time since the controller is still in the 
 ;   8-bit mode, but the data transfer mode can be changed since this parameter is determined by one 
 ;   of the upper four bits of the instruction.
-    ldi     tmpReg, lcd_FunctionSet4bit       ; set 4-bit mode
+    ldi     tmpReg, lcd_FunctionSet4bit     ; set 4-bit mode
     call    lcd_write_4
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
 
 ; Function Set instruction
-    ldi     tmpReg, lcd_FunctionSet4bit       ; set mode, lines, and font
+    ldi     tmpReg, lcd_FunctionSet4bit     ; set mode, lines, and font
     call    lcd_write_instruction_4d
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
 
 ; The next three instructions are specified in the data sheet as part of the initialization routine,
@@ -148,30 +148,30 @@ lcd_init_4d:
 ;   later if the application requires a different configuration.
 
 ; Display On/Off Control instruction
-    ldi     tmpReg, lcd_DisplayOff            ; turn display OFF
+    ldi     tmpReg, lcd_DisplayOff          ; turn display OFF
     call    lcd_write_instruction_4d
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
 
 ; Clear Display instruction
-    ldi     tmpReg, lcd_Clear                 ; clear display RAM
+    ldi     tmpReg, lcd_Clear               ; clear display RAM
     call    lcd_write_instruction_4d
-    ldi     tmpReg, 4                         ; 1.64 mS delay (min)
+    ldi     tmpReg, 4                       ; 1.64 mS delay (min)
     call    delayTx1mS
 
 ; Entry Mode Set instruction
-    ldi     tmpReg, lcd_EntryMode             ; set desired shift characteristics
+    ldi     tmpReg, lcd_EntryMode           ; set desired shift characteristics
     call    lcd_write_instruction_4d
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
 
 ; This is the end of the LCD controller initialization as specified in the data sheet, but the display
 ;   has been left in the OFF condition.  This is a good time to turn the display back ON.
 
 ; Display On/Off Control instruction
-    ldi     tmpReg, lcd_DisplayOn             ; turn the display ON
+    ldi     tmpReg, lcd_DisplayOn           ; turn the display ON
     call    lcd_write_instruction_4d
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
     ret
 
@@ -195,20 +195,20 @@ lcd_write_string_4d:
     rol     ZH
 
 ; set up the initial DDRAM address
-    ori     tmpReg, lcd_SetCursor             ; convert the plain address to a set cursor instruction
-    call   lcd_write_instruction_4d         ; set up the first DDRAM address
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ori     tmpReg, lcd_SetCursor           ; convert the plain address to a set cursor instruction
+    call    lcd_write_instruction_4d        ; set up the first DDRAM address
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
 
 ; write the string of characters
 lcd_write_string_4d_01:
-    lpm     tmpReg, Z+                        ; get a character
-    cpi     tmpReg,  0                        ; check for end of string
+    lpm     tmpReg, Z+                      ; get a character
+    cpi     tmpReg,  0                      ; check for end of string
     breq    lcd_write_string_4d_02          ; done
 
 ; arrive here if this is a valid character
     call    lcd_write_character_4d          ; display the character
-    ldi     tmpReg, 80                        ; 40 uS delay (min)
+    ldi     tmpReg, 80                      ; 40 uS delay (min)
     call    delayTx1uS
     rjmp    lcd_write_string_4d_01          ; not done, send another character
 
@@ -232,7 +232,7 @@ lcd_write_string_4d_02:
 lcd_write_4:
 ; set up D7
     sbi     lcd_D7_port, lcd_D7_bit         ; assume that the D7 data is '1'
-    sbrs    tmpReg, 7                         ; check the actual data value
+    sbrs    tmpReg, 7                       ; check the actual data value
     cbi     lcd_D7_port, lcd_D7_bit         ; arrive here only if the data was actually '0'
 
 ; set up D6
@@ -271,7 +271,7 @@ lcd_write_4:
 lcd_write_4_dataReg:
 ; set up D7
     sbi     lcd_D7_port, lcd_D7_bit         ; assume that the D7 data is '1'
-    sbrs    dataReg, 7                         ; check the actual data value
+    sbrs    dataReg, 7                      ; check the actual data value
     cbi     lcd_D7_port, lcd_D7_bit         ; arrive here only if the data was actually '0'
 
 ; set up D6
@@ -296,7 +296,7 @@ lcd_write_4_dataReg:
     cbi     lcd_E_port, lcd_E_bit           ; Enable pin low
     call    delay1uS                        ; implement 'Data hold time' (10 nS) and 'Enable cycle time' (500 nS)
     ret
-	 
+     
 ; ============================== End of 4-bit LCD Subroutines ===============
 
 
@@ -312,7 +312,7 @@ lcd_write_instruction_4d:
     cbi     lcd_RS_port, lcd_RS_bit         ; select the Instruction Register (RS low)
     cbi     lcd_E_port, lcd_E_bit           ; make sure E is initially low
     call    lcd_write_4                     ; write the upper 4-bits of the instruction
-    swap    tmpReg                            ; swap high and low nibbles
+    swap    tmpReg                          ; swap high and low nibbles
     call    lcd_write_4                     ; write the lower 4-bits of the instruction
     ret
 
@@ -326,12 +326,12 @@ lcd_write_instruction_4d:
 
 lcd_write_character_4d:
 
-	sbi     lcd_RS_port, lcd_RS_bit         ; select the Data Register (RS high)
-	cbi     lcd_E_port, lcd_E_bit           ; make sure E is initially low
-	call    lcd_write_4                     ; write the upper 4-bits of the data
-	swap    tmpReg                            ; swap high and low nibbles
-	call    lcd_write_4                     ; write the lower 4-bits of the data
-	 
+    sbi     lcd_RS_port, lcd_RS_bit         ; select the Data Register (RS high)
+    cbi     lcd_E_port, lcd_E_bit           ; make sure E is initially low
+    call    lcd_write_4                     ; write the upper 4-bits of the data
+    swap    tmpReg                          ; swap high and low nibbles
+    call    lcd_write_4                     ; write the lower 4-bits of the data
+     
 ret
 
 ; ---------------------------------------------------------------------------
@@ -343,10 +343,10 @@ ret
 
 lcd_write_character_4d_dataReg:
 
-	sbi     lcd_RS_port, lcd_RS_bit         ; select the Data Register (RS high)
-	cbi     lcd_E_port, lcd_E_bit           ; make sure E is initially low
-	call    lcd_write_4_dataReg                     ; write the upper 4-bits of the data
-	swap    dataReg                            ; swap high and low nibbles
-	call    lcd_write_4_dataReg                     ; write the lower 4-bits of the data
-	 
+    sbi     lcd_RS_port, lcd_RS_bit         ; select the Data Register (RS high)
+    cbi     lcd_E_port, lcd_E_bit           ; make sure E is initially low
+    call    lcd_write_4_dataReg             ; write the upper 4-bits of the data
+    swap    dataReg                         ; swap high and low nibbles
+    call    lcd_write_4_dataReg             ; write the lower 4-bits of the data
+     
 ret

@@ -97,7 +97,7 @@ Following is the bill of materials needed for this project (not including parts 
 
 <table>
   <thead>
-  	<tr>
+    <tr>
     <th>Amount</th>
     <th>Part Type</th>
     </tr>
